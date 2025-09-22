@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RC Boat Trials</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #0a1118;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      #gl-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      #overlay-root {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .notice {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1.5rem 2rem;
+        background: rgba(10, 17, 24, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        text-align: center;
+        max-width: 420px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gl-canvas"></canvas>
+    <div id="overlay-root"></div>
+    <div id="compatibility-notice" class="notice" style="display: none"></div>
+    <script type="module" src="./src/core/main.js"></script>
+  </body>
+</html>
