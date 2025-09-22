@@ -7,10 +7,12 @@ import {
   assertExtensions,
 } from '../core/gl-utils.js';
 
-async function loadText(url) {
-  const response = await fetch(url);
+const SHADER_BASE_URL = new URL('../../shaders/', import.meta.url);
+
+async function loadText(name) {
+  const response = await fetch(new URL(name, SHADER_BASE_URL));
   if (!response.ok) {
-    throw new Error(`Failed to load shader: ${url}`);
+    throw new Error(`Failed to load shader: ${name}`);
   }
   return response.text();
 }
@@ -19,10 +21,10 @@ export class WaterSystem {
   static async create(gl, settings = WATER_SETTINGS) {
     assertExtensions(gl);
     const [dropSrc, updateSrc, normalSrc, probeSrc] = await Promise.all([
-      loadText('shaders/water_drop.frag'),
-      loadText('shaders/water_update.frag'),
-      loadText('shaders/water_normal.frag'),
-      loadText('shaders/probe.frag'),
+      loadText('water_drop.frag'),
+      loadText('water_update.frag'),
+      loadText('water_normal.frag'),
+      loadText('probe.frag'),
     ]);
     return new WaterSystem(gl, settings, {
       dropSrc,
