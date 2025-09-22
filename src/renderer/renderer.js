@@ -15,10 +15,12 @@ import {
   ENVIRONMENT_SETTINGS,
 } from '../core/tuning.js';
 
-async function loadText(url) {
-  const response = await fetch(url);
+const SHADER_BASE_URL = new URL('../../shaders/', import.meta.url);
+
+async function loadText(name) {
+  const response = await fetch(new URL(name, SHADER_BASE_URL));
   if (!response.ok) {
-    throw new Error(`Failed to load shader: ${url}`);
+    throw new Error(`Failed to load shader: ${name}`);
   }
   return response.text();
 }
@@ -88,10 +90,10 @@ function buildBoatMesh() {
 export class Renderer {
   static async create(gl, track) {
     const [waterVert, waterFrag, boatVert, boatFrag] = await Promise.all([
-      loadText('shaders/water_surface.vert'),
-      loadText('shaders/water_surface.frag'),
-      loadText('shaders/boat.vert'),
-      loadText('shaders/boat.frag'),
+      loadText('water_surface.vert'),
+      loadText('water_surface.frag'),
+      loadText('boat.vert'),
+      loadText('boat.frag'),
     ]);
     return new Renderer(gl, track, {
       waterVert,
