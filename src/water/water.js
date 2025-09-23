@@ -17,6 +17,20 @@ async function loadText(name) {
   return response.text();
 }
 
+function withCullDisabled(gl, fn) {
+  const wasCullEnabled = gl.isEnabled(gl.CULL_FACE);
+  if (wasCullEnabled) {
+    gl.disable(gl.CULL_FACE);
+  }
+  try {
+    fn();
+  } finally {
+    if (wasCullEnabled) {
+      gl.enable(gl.CULL_FACE);
+    }
+  }
+}
+
 export class WaterSystem {
   static async create(gl, settings = WATER_SETTINGS) {
     assertExtensions(gl);
@@ -126,7 +140,9 @@ export class WaterSystem {
     gl.uniform1f(this.dropUniforms.radius, radiusUv);
     gl.uniform1f(this.dropUniforms.strength, strength);
 
-    this.quad.draw();
+    withCullDisabled(gl, () => {
+      this.quad.draw();
+    });
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -151,7 +167,9 @@ export class WaterSystem {
     gl.uniform1f(this.updateUniforms.damping, this.settings.damping);
     gl.uniform1f(this.updateUniforms.dt, dt);
 
-    this.quad.draw();
+    withCullDisabled(gl, () => {
+      this.quad.draw();
+    });
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -170,7 +188,9 @@ export class WaterSystem {
     gl.uniform1i(this.normalUniforms.height, 0);
     gl.uniform2f(this.normalUniforms.texel, this.texel[0], this.texel[1]);
 
-    this.quad.draw();
+    withCullDisabled(gl, () => {
+      this.quad.draw();
+    });
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -192,7 +212,9 @@ export class WaterSystem {
 
     gl.uniform2f(this.probeUniforms.center, x, z);
 
-    this.quad.draw();
+    withCullDisabled(gl, () => {
+      this.quad.draw();
+    });
 
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, this.probeReadBuffer);
 

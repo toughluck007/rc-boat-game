@@ -179,7 +179,6 @@ export class Renderer {
     this.shallowColor = ENVIRONMENT_SETTINGS.waterShallowColor;
 
     gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.CULL_FACE);
   }
 
   resize(width, height) {
@@ -202,7 +201,7 @@ export class Renderer {
       boat.position[2] + forward[2] * 0.6,
     ];
     lookAt(this.viewMatrix, eye, target, CAMERA_SETTINGS.up);
-    multiply(this.viewProjectionMatrix, this.projectionMatrix, this.viewMatrix);
+    multiply(this.viewProjectionMatrix, this.viewMatrix, this.projectionMatrix);
     return { eye, target };
   }
 
@@ -226,6 +225,10 @@ export class Renderer {
 
   renderWater(water, camera) {
     const { gl } = this;
+    const cullEnabled = gl.isEnabled(gl.CULL_FACE);
+    if (cullEnabled) {
+      gl.disable(gl.CULL_FACE);
+    }
     gl.useProgram(this.waterProgram);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.waterBuffer);
     const stride = 4 * 4;
@@ -258,10 +261,17 @@ export class Renderer {
     gl.disableVertexAttribArray(0);
     gl.disableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    if (cullEnabled) {
+      gl.enable(gl.CULL_FACE);
+    }
   }
 
   renderBoat(boat, camera) {
     const { gl } = this;
+    const cullEnabled = gl.isEnabled(gl.CULL_FACE);
+    if (!cullEnabled) {
+      gl.enable(gl.CULL_FACE);
+    }
     gl.useProgram(this.boatProgram);
 
     const model = identity(this.tmpMatA);
@@ -300,5 +310,8 @@ export class Renderer {
     gl.disableVertexAttribArray(0);
     gl.disableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    if (!cullEnabled) {
+      gl.disable(gl.CULL_FACE);
+    }
   }
 }
