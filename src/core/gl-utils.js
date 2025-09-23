@@ -99,12 +99,19 @@ export function createFullscreenQuad(gl) {
   return {
     buffer: quadBuffer,
     draw() {
+      const wasCullEnabled = gl.isEnabled(gl.CULL_FACE);
+      if (wasCullEnabled) {
+        gl.disable(gl.CULL_FACE);
+      }
       gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
       gl.enableVertexAttribArray(0);
       gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       gl.disableVertexAttribArray(0);
       gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      if (wasCullEnabled) {
+        gl.enable(gl.CULL_FACE);
+      }
     },
   };
 }
