@@ -201,7 +201,7 @@ export class Renderer {
       boat.position[2] + forward[2] * 0.6,
     ];
     lookAt(this.viewMatrix, eye, target, CAMERA_SETTINGS.up);
-    multiply(this.viewProjectionMatrix, this.projectionMatrix, this.viewMatrix);
+    multiply(this.viewProjectionMatrix, this.viewMatrix, this.projectionMatrix);
     return { eye, target };
   }
 
